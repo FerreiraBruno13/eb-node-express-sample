@@ -80,10 +80,10 @@ if (cluster.isMaster) {
                         Theme: ${theme}`,
                     'Subject': 'New user sign up!!!',
                     'TopicArn': snsTopic
-                }, function(err, data) {
-                    if (err) {
+                }, function(err1, data1) {
+                    if (err1) {
                         res.status(500).end();
-                        console.log('SNS Error: ' + err);
+                        console.log('SNS Error: ' + err1);
                     } else {
                         res.status(201).end();
                     }
@@ -94,7 +94,7 @@ if (cluster.isMaster) {
 
     const port = process.env.PORT || 3000;
 
-    const server = app.listen(port, function() {
+    app.listen(port, function() {
         console.log('Server running at http://127.0.0.1:' + port + '/');
     });
 }
