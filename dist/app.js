@@ -47,7 +47,6 @@ var body_parser_1 = require("body-parser");
 var client_dynamodb_1 = require("@aws-sdk/client-dynamodb");
 var client_sns_1 = require("@aws-sdk/client-sns");
 dotenv_1.default.config();
-;
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     var cpuCount, i, region, dbClient_1, snsClient_1, ddbTable_1, snsTopic_1, app, port_1;
     return __generator(this, function (_a) {
@@ -62,11 +61,11 @@ dotenv_1.default.config();
             });
         }
         else {
-            region = process.env.REGION || 'sa-east-1';
+            region = process.env.REGION || "sa-east-1";
             dbClient_1 = new client_dynamodb_1.DynamoDBClient({ region: region });
             snsClient_1 = new client_sns_1.SNSClient({ region: region });
-            ddbTable_1 = process.env.STARTUP_SIGNUP_TABLE || 'nodejs-tutorial';
-            snsTopic_1 = process.env.NEW_SIGNUP_TOPIC || 'hello-node';
+            ddbTable_1 = process.env.STARTUP_SIGNUP_TABLE || "nodejs-tutorial";
+            snsTopic_1 = process.env.NEW_SIGNUP_TOPIC || "hello-node";
             app = express_1.default();
             app.set("view engine", "ejs");
             app.set("views", path_1.default.join(__dirname, "../views"));
@@ -82,64 +81,58 @@ dotenv_1.default.config();
             app.post("/signup", function (_a, res) {
                 var _b = _a.body, email = _b.email, name = _b.name, previewAccess = _b.previewAccess, theme = _b.theme;
                 return __awaiter(this, void 0, void 0, function () {
-                    var item, TopicArn, Subscriptions, message, snsData, error_1, error_2, returnStatus;
+                    var TopicArn, Subscriptions, snsData, error_1, error_2, returnStatus;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
                             case 0:
-                                item = {
-                                    TableName: ddbTable_1,
-                                    Item: {
-                                        email: { S: email },
-                                        name: { S: name },
-                                        preview: { S: previewAccess },
-                                        theme: { S: theme },
-                                    },
-                                };
-                                _c.label = 1;
-                            case 1:
-                                _c.trys.push([1, 11, , 12]);
+                                _c.trys.push([0, 9, , 10]);
                                 return [4, snsClient_1.send(new client_sns_1.CreateTopicCommand({ Name: snsTopic_1 }))];
-                            case 2:
+                            case 1:
                                 TopicArn = (_c.sent()).TopicArn;
                                 return [4, snsClient_1.send(new client_sns_1.ListSubscriptionsByTopicCommand({ TopicArn: TopicArn }))];
-                            case 3:
+                            case 2:
                                 Subscriptions = (_c.sent()).Subscriptions;
-                                if (!!(Subscriptions === null || Subscriptions === void 0 ? void 0 : Subscriptions.find(function (sub) { return sub.Endpoint === email; }))) return [3, 6];
-                                return [4, dbClient_1.send(new client_dynamodb_1.PutItemCommand(item))];
-                            case 4:
+                                if (!!(Subscriptions === null || Subscriptions === void 0 ? void 0 : Subscriptions.find(function (sub) { return sub.Endpoint === email; }))) return [3, 5];
+                                return [4, dbClient_1.send(new client_dynamodb_1.PutItemCommand({
+                                        TableName: ddbTable_1,
+                                        Item: {
+                                            email: { S: email },
+                                            name: { S: name },
+                                            preview: { S: previewAccess },
+                                            theme: { S: theme },
+                                        },
+                                    }))];
+                            case 3:
                                 _c.sent();
                                 return [4, snsClient_1.send(new client_sns_1.SubscribeCommand({
                                         Protocol: "email",
                                         TopicArn: TopicArn,
-                                        Endpoint: email
+                                        Endpoint: email,
                                     }))];
-                            case 5:
+                            case 4:
                                 _c.sent();
                                 res.status(201).end();
-                                _c.label = 6;
+                                _c.label = 5;
+                            case 5:
+                                _c.trys.push([5, 7, , 8]);
+                                return [4, snsClient_1.send(new client_sns_1.PublishCommand({
+                                        Message: ("Name: " + name + "\n                          Email: " + email + "\n                          PreviewAccess: " + previewAccess + "\n                          Theme: " + theme).replace("\t", ""),
+                                        Subject: "New user sign up!!!",
+                                        TopicArn: TopicArn,
+                                    }))];
                             case 6:
-                                message = {
-                                    Message: "Name: " + name + "\n                      Email: " + email + "\n                      PreviewAccess: " + previewAccess + "\n                      Theme: " + theme,
-                                    Subject: "New user sign up!!!",
-                                    TopicArn: TopicArn
-                                };
-                                _c.label = 7;
-                            case 7:
-                                _c.trys.push([7, 9, , 10]);
-                                return [4, snsClient_1.send(new client_sns_1.PublishCommand(message))];
-                            case 8:
                                 snsData = _c.sent();
                                 console.log("Message sent to the topic");
                                 console.log("MessageID is " + snsData.MessageId);
                                 res.status(201).end();
-                                return [3, 10];
-                            case 9:
+                                return [3, 8];
+                            case 7:
                                 error_1 = _c.sent();
                                 res.status(500).end();
                                 console.log("SNS Error: " + error_1);
-                                return [3, 10];
-                            case 10: return [3, 12];
-                            case 11:
+                                return [3, 8];
+                            case 8: return [3, 10];
+                            case 9:
                                 error_2 = _c.sent();
                                 returnStatus = 500;
                                 if (error_2.code === "ConditionalCheckFailedException") {
@@ -147,8 +140,8 @@ dotenv_1.default.config();
                                 }
                                 res.status(returnStatus).end();
                                 console.log("DDB Error: " + error_2);
-                                return [3, 12];
-                            case 12: return [2];
+                                return [3, 10];
+                            case 10: return [2];
                         }
                     });
                 });
