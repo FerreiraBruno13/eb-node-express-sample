@@ -96,10 +96,10 @@ dotenv.config();
           try {
             const snsData = await snsClient.send(
               new PublishCommand({
-                Message: `Name: ${name}
-                          Email: ${email}
-                          PreviewAccess: ${previewAccess}
-                          Theme: ${theme}`.replace("\t", ""), // Remove tabs
+                Message: `Name: ${name}`
+                        + `\nEmail: ${email}`
+                        + `\nPreviewAccess: ${previewAccess}`
+                        + `\nTheme: ${theme}`,
                 Subject: "New user sign up!!!",
                 TopicArn,
               })

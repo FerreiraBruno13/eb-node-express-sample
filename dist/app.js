@@ -116,7 +116,10 @@ dotenv_1.default.config();
                             case 5:
                                 _c.trys.push([5, 7, , 8]);
                                 return [4, snsClient_1.send(new client_sns_1.PublishCommand({
-                                        Message: ("Name: " + name + "\n                          Email: " + email + "\n                          PreviewAccess: " + previewAccess + "\n                          Theme: " + theme).replace("\t", ""),
+                                        Message: "Name: " + name
+                                            + ("\nEmail: " + email)
+                                            + ("\nPreviewAccess: " + previewAccess)
+                                            + ("\nTheme: " + theme),
                                         Subject: "New user sign up!!!",
                                         TopicArn: TopicArn,
                                     }))];
