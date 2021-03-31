@@ -5,8 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "start": "node .",
-    "build": "tsc",
-    "zip": "zip eb-node-express-sample.zip -r *"
+    "build": "tsc"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.10.0",
